@@ -161,3 +161,27 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         # Assert that the length of the returned object is 5
         self.assertEqual(len(data), 5)
+
+    def test_update_account(self):
+        """Test for updating an existing account"""
+        # Create an account to update using AccountFactory
+        account = AccountFactory()
+        # Send a POST request to the endpoint to create the new account object
+        resp = self.client.post(BASE_URL, json=account.serialize())
+        # Assert that the response status code from POST is 201 - CREATED
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Make an update to the account
+        # Get the data from the POST response object
+        data = resp.get_json()
+        # Change the account name to a dummy value
+        data['name'] = 'something known'
+        # Send a PUT request to update the account in the db
+        resp = self.client.put(f'{BASE_URL}/{data["id"]}', json=data)
+        # Assert that the response status code is 200 - OK
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # Get the data from the PUT response object
+        data = resp.get_json()
+        # Assert that the name for tha account has been changed
+        self.assertEqual(data['name'], 'something known')
+        
