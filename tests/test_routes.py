@@ -138,3 +138,13 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         # Assert that the 'name' attributes are matching
         self.assertEqual(data['name'], account.name)
+
+    # To maintain code coverage - test sad paths as well, e.g.: read an account with
+    # an account id that does not exists
+    def test_account_not_found(self):
+        """Test for getting an Account that does not exists"""
+        # Make a GET request to the endpoint passing in an ID that does not belong to
+        # an account
+        resp = self.client.get(f'{BASE_URL}/0')
+        # Assert that the returned status code was 404
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
