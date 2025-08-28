@@ -141,7 +141,7 @@ class TestAccountService(TestCase):
 
     # To maintain code coverage - test sad paths as well, e.g.: read an account with
     # an account id that does not exists
-    def test_account_not_found(self):
+    def test_get_account_not_found(self):
         """Test for getting an Account that does not exists"""
         # Make a GET request to the endpoint passing in an ID that does not belong to
         # an account
@@ -184,6 +184,14 @@ class TestAccountService(TestCase):
         data = resp.get_json()
         # Assert that the name for tha account has been changed
         self.assertEqual(data['name'], 'something known')
+
+    def test_put_account_not_found(self):
+        """Test for updating an account that does not exist"""
+        # Make a PUT request to the endpoint passing in an ID that does not belong to
+        # an account
+        resp = self.client.put(f'{BASE_URL}/0')
+        # Assert that the returned status code was 404
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
         
     def test_delete_account(self):
         """Test to delete an account"""
@@ -194,3 +202,18 @@ class TestAccountService(TestCase):
         resp = self.client.delete(f'{BASE_URL}/{account.id}')
         # Asser that the response status code is 204 - NO CONTENT
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_delete_account_not_found(self):
+        """Test for deleting an account that does not exist"""
+        # Make a DELETE request to the endpoint passing in an ID that does not belong to
+        # an account
+        resp = self.client.delete(f'{BASE_URL}/0')
+        # Assert that the returned status code was 404
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_method_not_allowed(self):
+        """Test for illegal method call"""
+        # Send a DELETE request to an endpoint that does not support that HTTP method
+        resp = self.client.delete(BASE_URL)
+        # Assert that the response status code is 405 - METHOD NOT ALLOWED
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
