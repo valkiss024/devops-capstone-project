@@ -148,3 +148,16 @@ class TestAccountService(TestCase):
         resp = self.client.get(f'{BASE_URL}/0')
         # Assert that the returned status code was 404
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+    def test_get_account_list(self):
+        """Test for listing accounts"""
+        # Create 5 accounts
+        self._create_accounts(5)
+        # Send a GET request to the endpoint to query all accounts
+        resp = self.client.get(BASE_URL)
+        # Assert that the status code is 200 - OK
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # Get the data from the response object
+        data = resp.get_json()
+        # Assert that the length of the returned object is 5
+        self.assertEqual(len(data), 5)
