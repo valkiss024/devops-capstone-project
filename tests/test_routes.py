@@ -185,3 +185,12 @@ class TestAccountService(TestCase):
         # Assert that the name for tha account has been changed
         self.assertEqual(data['name'], 'something known')
         
+    def test_delete_account(self):
+        """Test to delete an account"""
+        # Create an account that will be deleted
+        account = self._create_accounts(1)[0]
+        # Send a DELETE request to the endpoint passing in the id of the account to be 
+        # deleted
+        resp = self.client.delete(f'{BASE_URL}/{account.id}')
+        # Asser that the response status code is 204 - NO CONTENT
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
