@@ -238,3 +238,12 @@ class TestAccountService(TestCase):
         # Assert that each response header matches the expected header from above
         for k, v in headers.items():
             self.assertEqual(resp.headers.get(k), v)
+
+    # CORS POLICIES
+    def test_cors_security(self):
+        """Test to assert the presence of CORS header"""
+        resp = self.client.get('/', environ_overrides=HTTPS_ENVIRON)
+        # Assert response status code 200 - OK
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # Assert the presence of CORS header
+        self.assertEqual(resp.headers.get('Access-Control-Allow-Origin'), '*')
